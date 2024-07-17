@@ -6,7 +6,7 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "yidao",
+    "productName": "yidaotest",
     "version": "0.0.0"
   },
   "tauri": {
@@ -19,7 +19,7 @@
     },
     "windows": [
       {
-        "title": "yidao",
+        "title": "yidaotest",
         "width": 800,
         "height": 600
       }
