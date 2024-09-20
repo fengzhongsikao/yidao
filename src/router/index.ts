@@ -2,6 +2,7 @@ import App from "@/App";
 import Aside from "@/page/Aside";
 import Grid from "@/page/Grid";
 import PortraitDetail from "@/page/portraitDetail";
+import Test from "@/page/Test";
 
 import {
     createBrowserRouter,
@@ -16,7 +17,17 @@ const router=createBrowserRouter([
                 id:"grid",
                 path:"grid",
                 Component:Grid
-            }
+            },
+            {
+                id:"test",
+                path:'test',
+                Component:Test
+            },
+            {
+                id:"portraitDetail",
+                path:'portraitDetail',
+                Component:PortraitDetail
+            },
         ]
     },
     {
@@ -24,11 +35,8 @@ const router=createBrowserRouter([
         path:"/aside",
         Component:Aside,
     },
-    {
-        id:"portraitDetail",
-        path:'/portraitDetail',
-        Component:PortraitDetail
-    }
+
+
 
 ]);
 

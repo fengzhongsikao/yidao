@@ -1,4 +1,5 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 
 function Aside() {
@@ -6,11 +7,23 @@ function Aside() {
     const [clickValue, setClickValue] = useState(0);
     const categoryList = ['易经', '测试',];
 
+    const  navigator=useNavigate();
+
+    useEffect(() => {
+        navigator('grid');
+    }, []); // 空数
+
+
     const handleButtonClick = (index: number) => {
         setClickValue(index); // 每次点击增加状态值
+
+        if(index==0){
+            navigator('grid');
+        }else{
+            navigator('test');
+        }
+
     };
-
-
 
     const items = categoryList.map((value, index) =>
         <li>
