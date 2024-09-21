@@ -15,17 +15,17 @@ const router=createBrowserRouter([
         children:[
             {
                 id:"grid",
-                path:"grid",
+                path:"/grid",
                 Component:Grid
             },
             {
                 id:"test",
-                path:'test',
+                path:'/test',
                 Component:Test
             },
             {
                 id:"portraitDetail",
-                path:'portraitDetail',
+                path:'/portraitDetail',
                 Component:PortraitDetail
             },
         ]
@@ -35,6 +35,8 @@ const router=createBrowserRouter([
         path:"/aside",
         Component:Aside,
     },
+
+
 
 
 

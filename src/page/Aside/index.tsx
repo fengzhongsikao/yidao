@@ -1,13 +1,25 @@
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
-
+interface Category {
+    id: number;
+    name: string;
+}
 function Aside() {
 
     const [clickValue, setClickValue] = useState(0);
-    const categoryList = ['易经', '测试',];
+    const categoryList:Category[]=[
+        {
+        id: 0,
+        name: '易经',
+        },
+        {
+            id: 1,
+            name: '测试'
+        }
+    ];
 
-    const  navigator=useNavigate();
+    const navigator = useNavigate();
 
     useEffect(() => {
         navigator('grid');
@@ -15,24 +27,23 @@ function Aside() {
 
 
     const handleButtonClick = (index: number) => {
-        setClickValue(index); // 每次点击增加状态值
-
-        if(index==0){
+        if (index == 0) {
             navigator('grid');
-        }else{
+        } else {
             navigator('test');
         }
+        setClickValue(index); // 每次点击增加状态值
 
     };
 
     const items = categoryList.map((value, index) =>
-        <li>
-            <button key={index} className='mt-4' onClick={() => handleButtonClick(index)} style={
+        <li key={value.id}>
+            <button  className='mt-4' onClick={() => handleButtonClick(index)} style={
                 {
                     backgroundColor: clickValue === index ? 'green' : 'white'
                 }
             }>
-                {value}
+                {value.name}
             </button>
         </li>
     );
