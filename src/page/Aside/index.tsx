@@ -39,18 +39,22 @@ function Aside() {
     // @ts-ignore
     const {setGuaListTemp} = useGuaStore();
 
-    async function init() {
-        let res: guaListType = await invoke("test");
-        setGuaList(
-            [...res]
-        )
 
-    }
 
     useEffect(() => {
-        init().then(()=>{console.log("完成")})
-        setGuaListTemp([...guaList]);
-        console.log(guaList)
+        async function init() {
+            try {
+                let res: guaListType = await invoke("test");
+                setGuaList(res); // 假设 res 已经是 guaListType 类型的数组
+                console.log('guaList------'+guaList)
+                setGuaListTemp(guaList);
+            } catch (error) {
+                console.error("Failed to fetch guaList:", error);
+                // 处理错误，例如设置一个错误状态
+            }
+        }
+        init().then(()=>{})
+
     }, []);
 
     useEffect(() => {

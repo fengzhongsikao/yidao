@@ -35,7 +35,8 @@ function DetailItem() {
                 ...res[numberParam]
             }
         )
-        console.log(res)
+        console.log('res----');
+        console.log(res);
     }
 
 
