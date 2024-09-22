@@ -3,6 +3,7 @@ import {guaMap} from "@/values/guaMap.ts";
 import {Qian, Dui, MyLi, Zhen, Xun, Kan, Gen, Kun} from "@/page/comnents/bagua.tsx";
 import { invoke } from "@tauri-apps/api/core";
 import {useEffect, useState} from "react";
+import useGuaStore from "@/store";
 
 
 type guaType = {
@@ -19,11 +20,13 @@ function DetailItem() {
     const [params] = useSearchParams();
     const [gua, setGua] = useState<guaType>({gua_ci: "", gua_name: "", id: 0, up_down: "", yao_ci: []});
 
+    const bears = useGuaStore((state:any) => state.guaListTemp)
+
     const numberParam = Number(params.get('id'));
 
     useEffect(() => {
         init().then(()=>{})
-    }, [gua]);
+    }, []);
 
     async function init() {
         let res: guaListType = await invoke("test");
@@ -34,21 +37,27 @@ function DetailItem() {
         )
         console.log(res)
     }
+
+
     return (
         <div>
             <button onClick={() => navigator(-1)}>返回</button>
-           <div>
-              <div className='w-200'>
-                  {content(gua)}
-              </div>
-               <div>
-                   {Object.keys(guaMap[numberParam]).map((key, value) => (
-                       <div key={value}>
-                           {ShowGua(key, guaMap[numberParam][parseInt(key)])}
-                       </div>
-                   ))}
-               </div>
-           </div>
+            <div>
+                <div>{bears[0].gua_name}</div>
+                <div>{bears[0].gua_name}</div>
+                <div>{bears[0].gua_name}</div>
+                <div className='w-200'>
+                    {content(gua)}
+                </div>
+
+                <div>
+                    {Object.keys(guaMap[numberParam]).map((key, value) => (
+                        <div key={value}>
+                            {ShowGua(key, guaMap[numberParam][parseInt(key)])}
+                        </div>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 }

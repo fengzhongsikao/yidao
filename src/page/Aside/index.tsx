@@ -1,10 +1,22 @@
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import useGuaStore from "@/store";
+import {invoke} from "@tauri-apps/api/core";
 
 interface Category {
     id: number;
     name: string;
 }
+
+
+type guaType = {
+    "id": number,
+    "gua_name": string,
+    "up_down": string,
+    "gua_ci": string,
+    "yao_ci": Array<string>,
+}
+type guaListType=guaType[];
 
 function Aside() {
 
@@ -17,21 +29,41 @@ function Aside() {
         {
             id: 1,
             name: '测试'
-        }
+        },
     ];
 
     const navigator = useNavigate();
+
+    const [guaList, setGuaList] = useState<guaListType>([{gua_ci: "", gua_name: "", id: 0, up_down: "", yao_ci: []}]);
+
+    // @ts-ignore
+    const {setGuaListTemp} = useGuaStore();
+
+    async function init() {
+        let res: guaListType = await invoke("test");
+        setGuaList(
+            [...res]
+        )
+
+    }
+
+    useEffect(() => {
+        init().then(()=>{console.log("完成")})
+        setGuaListTemp([...guaList]);
+        console.log(guaList)
+    }, []);
 
     useEffect(() => {
         navigator('grid');
     }, []); // 空数
 
 
-    const handleButtonClick = (index: number) => {
+    const handleButtonClick = async (index: number) => {
         if (index == 0) {
             navigator('grid');
-        } else {
+        } else if (index == 1) {
             navigator('test');
+        } else if (index == 2) {
         }
         setClickValue(index); // 每次点击增加状态值
 
@@ -55,6 +87,7 @@ function Aside() {
 
     );
 }
+
 
 
 export default Aside;

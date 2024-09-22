@@ -2,8 +2,8 @@ import "./App.css";
 import Aside from "@/page/Aside/index.tsx";
 import {Outlet} from "react-router-dom";
 
-
 function App() {
+
     return (
         <div className="flex">
             <Aside/>
@@ -13,6 +13,9 @@ function App() {
         </div>
     );
 }
+
+
+
 export default App;
 
 
