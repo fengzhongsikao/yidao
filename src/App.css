@@ -2,17 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-
-logo.vite:hover {
+.logo.vite:hover {
   filter: drop-shadow(0 0 2em #747bff);
 }
 
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafb);
-}
-
-li {
-  list-style-type: none;
 }
 :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
@@ -98,6 +93,10 @@ button:active {
 input,
 button {
   outline: none;
+}
+
+li {
+  list-style-type: none;
 }
 
 #greet-input {

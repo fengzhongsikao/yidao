@@ -1,7 +1,7 @@
 import {useNavigate, useSearchParams} from "react-router-dom";
 import {guaMap} from "@/values/guaMap.ts";
 import {Qian, Dui, MyLi, Zhen, Xun, Kan, Gen, Kun} from "@/page/comnents/bagua.tsx";
-import {invoke} from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/core";
 import {useEffect, useState} from "react";
 
 

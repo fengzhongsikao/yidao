@@ -5,13 +5,14 @@ interface Category {
     id: number;
     name: string;
 }
+
 function Aside() {
 
     const [clickValue, setClickValue] = useState(0);
-    const categoryList:Category[]=[
+    const categoryList: Category[] = [
         {
-        id: 0,
-        name: '易经',
+            id: 0,
+            name: '易经',
         },
         {
             id: 1,
@@ -37,8 +38,8 @@ function Aside() {
     };
 
     const items = categoryList.map((value, index) =>
-        <li key={value.id}>
-            <button  className='mt-4' onClick={() => handleButtonClick(index)} style={
+        <li key={value.id} className='mt-5'>
+            <button onClick={() => handleButtonClick(index)} style={
                 {
                     backgroundColor: clickValue === index ? 'green' : 'white'
                 }
@@ -48,7 +49,7 @@ function Aside() {
         </li>
     );
     return (
-        <div className='w-1/6 flex flex-col justify-start items-center border-r-2 border-r border-red-500'>
+        <div className='w-1/6 flex flex-col justify-start items-center border-r border-red-500'>
             {items}
         </div>
 
