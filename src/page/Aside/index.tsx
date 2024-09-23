@@ -21,6 +21,9 @@ type guaListType=guaType[];
 function Aside() {
 
     const [clickValue, setClickValue] = useState(0);
+    // @ts-ignore
+    const {setGuaListTemp} = useGuaStore();
+
     const categoryList: Category[] = [
         {
             id: 0,
@@ -34,10 +37,9 @@ function Aside() {
 
     const navigator = useNavigate();
 
-    const [guaList, setGuaList] = useState<guaListType>([{gua_ci: "", gua_name: "", id: 0, up_down: "", yao_ci: []}]);
 
-    // @ts-ignore
-    const {setGuaListTemp} = useGuaStore();
+
+
 
 
 
@@ -45,9 +47,7 @@ function Aside() {
         async function init() {
             try {
                 let res: guaListType = await invoke("json");
-                setGuaList(res); // 假设 res 已经是 guaListType 类型的数组
-                console.log('guaList------'+guaList)
-                setGuaListTemp(guaList);
+                setGuaListTemp(res);
             } catch (error) {
                 console.error("Failed to fetch guaList:", error);
                 // 处理错误，例如设置一个错误状态

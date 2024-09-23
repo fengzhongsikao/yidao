@@ -17,7 +17,8 @@ fn json()-> Vec<crate::about_json::get_json::my_lib::Guashu>{
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        .plugin(tauri_plugin_shell::init()).setup(|app| {
+        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_dialog::init()).setup(|app| {
         #[cfg(debug_assertions)] // 仅在调试构建时包含此代码
         {
             let window = app.get_webview_window("main").unwrap();

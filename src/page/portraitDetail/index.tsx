@@ -1,7 +1,6 @@
 import {useNavigate, useSearchParams} from "react-router-dom";
 import {guaMap} from "@/values/guaMap.ts";
 import {Qian, Dui, MyLi, Zhen, Xun, Kan, Gen, Kun} from "@/page/comnents/bagua.tsx";
-import { invoke } from "@tauri-apps/api/core";
 import {useEffect, useState} from "react";
 import useGuaStore from "@/store";
 
@@ -13,7 +12,6 @@ type guaType = {
     "gua_ci": string,
     "yao_ci": Array<string>,
 }
-type guaListType=guaType[];
 
 function DetailItem() {
     const navigator = useNavigate();
@@ -29,24 +27,18 @@ function DetailItem() {
     }, []);
 
     async function init() {
-        let res: guaListType = await invoke("json");
         setGua(
             {
-                ...res[numberParam]
+                ...bears[numberParam]
             }
         )
-        console.log('res----');
-        console.log(res);
-    }
 
+    }
 
     return (
         <div>
             <button onClick={() => navigator(-1)}>返回</button>
             <div>
-                <div>{bears[0].gua_name}</div>
-                <div>{bears[0].gua_name}</div>
-                <div>{bears[0].gua_name}</div>
                 <div className='w-200'>
                     {content(gua)}
                 </div>
