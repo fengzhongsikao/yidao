@@ -44,7 +44,7 @@ function Aside() {
     useEffect(() => {
         async function init() {
             try {
-                let res: guaListType = await invoke("test");
+                let res: guaListType = await invoke("json");
                 setGuaList(res); // 假设 res 已经是 guaListType 类型的数组
                 console.log('guaList------'+guaList)
                 setGuaListTemp(guaList);

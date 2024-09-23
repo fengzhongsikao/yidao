@@ -29,7 +29,7 @@ function DetailItem() {
     }, []);
 
     async function init() {
-        let res: guaListType = await invoke("test");
+        let res: guaListType = await invoke("json");
         setGua(
             {
                 ...res[numberParam]
