@@ -42,8 +42,9 @@ function DetailItem() {
                 <div className='w-200'>
                     {content(gua)}
                 </div>
+            
 
-                <div>
+                <div className="mt-4">
                     {Object.keys(guaMap[numberParam]).map((key, value) => (
                         <div key={value}>
                             {ShowGua(key, guaMap[numberParam][parseInt(key)])}

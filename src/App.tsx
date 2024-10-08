@@ -7,7 +7,7 @@ function App() {
     return (
         <div className="flex">
             <Aside/>
-            <div className="flex-grow overflow-hidden h-screen">
+            <div className="flex-grow overflow-hidden h-screen ml-3">
                 <Outlet></Outlet>
             </div>
         </div>

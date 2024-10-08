@@ -3,9 +3,9 @@
 export function Ying(){
     return (
         <div>
-            <svg viewBox="0 0 220 12" xmlns="http://www.w3.org/2000/svg">
-                <rect x="120" width="25" height="10" rx="2"/>
-                <rect x="155" width="25" height="10" rx="2"/>
+            <svg viewBox="0 0 80 5" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" width="10" height="4" rx="1"/>
+                <rect x="12" width="10" height="4" rx="1"/>
             </svg>
 
         </div>
@@ -15,8 +15,8 @@ export function Ying(){
 export function Yang() {
     return (
         <div>
-            <svg viewBox="0 0 220 12" xmlns="http://www.w3.org/2000/svg">
-                <rect x="120" width="60" height="10" rx="2"/>
+            <svg viewBox="0 0 80 5" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" width="22" height="4" rx="1"/>
             </svg>
         </div>
     )
