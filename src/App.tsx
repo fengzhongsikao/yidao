@@ -5,9 +5,18 @@ import {Outlet} from "react-router-dom";
 function App() {
 
     return (
-        <div className="flex">
+        <div style={
+            { display:"flex"}
+        }>
             <Aside/>
-            <div className="flex-grow overflow-hidden h-screen ml-3">
+            <div style={
+                {
+                    flexGrow: 1,
+                    overflow: 'hidden',
+                    height: '100vh',
+                    marginLeft: '0.75rem'
+                }
+            }>
                 <Outlet></Outlet>
             </div>
         </div>

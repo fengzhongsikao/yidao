@@ -1,16 +1,23 @@
 import {quan} from '@/values/quangua.ts';
 
 import {useNavigate} from 'react-router-dom'
-
-
+import Button from "@mui/material/Button";
 
 function itemList() {
     const navigator = useNavigate();
     return (
-        <div className='grid grid-cols-8 gap-4 mt-20 mr-10 mb-20 ml-10'>
+        <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(8, minmax(0, 1fr))',
+            gap: '1rem',
+            marginTop: '5rem',
+            marginRight: '2.5rem',
+            marginBottom: '5rem',
+            marginLeft: '2.5rem'
+        }}>
             {quan.map((item, index) => (
-                <button className="bg-gray-200 w-25 h-12 px-0 py-auto " key={index}
-                      onClick={()=>navigator('/portraitDetail?id='+index)}  >{item}-{index + 1}</button>
+                <Button key={index} variant={quan.indexOf(item) === index ? "outlined":"contained"} onClick={() =>
+                    navigator('/portraitDetail?id='+index)} sx={{ maxWidth: 'fit-content' }}>{item}</Button>
             ))}
         </div>
     );

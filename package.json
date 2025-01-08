@@ -10,6 +10,9 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^6.3.1",
     "@tauri-apps/api": ">=2.0.0-rc.0",
     "@tauri-apps/plugin-dialog": "2.0.0-rc.1",
     "@tauri-apps/plugin-shell": ">=2.0.0-rc.0",
@@ -24,9 +27,6 @@
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.2.1",
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.44",
-    "tailwindcss": "^3.4.12",
     "typescript": "^5.2.2",
     "vite": "^5.3.1"
   }

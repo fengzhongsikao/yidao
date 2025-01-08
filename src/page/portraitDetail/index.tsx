@@ -3,7 +3,7 @@ import {guaMap} from "@/values/guaMap.ts";
 import {Qian, Dui, MyLi, Zhen, Xun, Kan, Gen, Kun} from "@/page/comnents/bagua.tsx";
 import {useEffect, useState} from "react";
 import useGuaStore from "@/store";
-
+import Button from "@mui/material/Button";
 
 type guaType = {
     "id": number,
@@ -18,12 +18,13 @@ function DetailItem() {
     const [params] = useSearchParams();
     const [gua, setGua] = useState<guaType>({gua_ci: "", gua_name: "", id: 0, up_down: "", yao_ci: []});
 
-    const bears = useGuaStore((state:any) => state.guaListTemp)
+    const bears = useGuaStore((state: any) => state.guaListTemp)
 
     const numberParam = Number(params.get('id'));
 
     useEffect(() => {
-        init().then(()=>{})
+        init().then(() => {
+        })
     }, []);
 
     async function init() {
@@ -37,14 +38,16 @@ function DetailItem() {
 
     return (
         <div>
-            <button onClick={() => navigator(-1)}>返回</button>
+            <Button onClick={() => navigator(-1)}>返回</Button>
             <div>
-                <div className='w-200'>
+                <div style={{
+                    width: '200px'
+                }}>
                     {content(gua)}
                 </div>
-            
-
-                <div className="mt-4">
+                <div style={{
+                    marginTop: '4px'
+                }}>
                     {Object.keys(guaMap[numberParam]).map((key, value) => (
                         <div key={value}>
                             {ShowGua(key, guaMap[numberParam][parseInt(key)])}

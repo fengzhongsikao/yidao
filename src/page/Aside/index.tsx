@@ -3,10 +3,16 @@ import {useNavigate} from "react-router-dom";
 import useGuaStore from "@/store";
 import {invoke} from "@tauri-apps/api/core";
 
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import { Box } from "@mui/material";
+
 interface Category {
     id: number;
     name: string;
 }
+
+
 
 
 type guaType = {
@@ -37,12 +43,6 @@ function Aside() {
 
     const navigator = useNavigate();
 
-
-
-
-
-
-
     useEffect(() => {
         async function init() {
             try {
@@ -72,26 +72,19 @@ function Aside() {
         setClickValue(index); // 每次点击增加状态值
 
     };
-
-    const items = categoryList.map((value, index) =>
-        <li key={value.id} className='mt-5'>
-            <button onClick={() => handleButtonClick(index)} style={
-                {
-                    backgroundColor: clickValue === index ? 'green' : 'white'
-                }
-            }>
-                {value.name}
-            </button>
-        </li>
-    );
     return (
-        <div className='w-1/6 flex flex-col justify-start items-center border-r border-red-500'>
-            {items}
-        </div>
+
+    <Box sx={{ width: 100, height: "100vh", borderRight: "1px solid red" }}>
+        <Stack spacing={4} >
+            {categoryList.map((item) => (
+                <Button key={item.id} variant={clickValue === item.id ? "contained" : 'outlined'} onClick={() =>
+                    handleButtonClick(item.id)} sx={{ maxWidth: 'fit-content' }}>{item.name}</Button>
+            ))}
+        </Stack>
+    </Box>
 
     );
 }
-
 
 
 export default Aside;
