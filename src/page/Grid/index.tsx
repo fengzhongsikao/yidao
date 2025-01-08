@@ -20,6 +20,7 @@ function itemList() {
                     navigator('/portraitDetail?id='+index)} sx={{ maxWidth: 'fit-content' }}>{item}</Button>
             ))}
         </div>
+
     );
 }
 

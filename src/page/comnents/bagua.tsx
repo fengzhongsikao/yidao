@@ -1,34 +1,35 @@
 import {Ying,Yang} from "@/page/comnents/twoYao.tsx";
+import Stack from "@mui/material/Stack";
 
 // 乾1
 export function Qian(){
     return (
-        <div>
+        <Stack spacing={2} sx={{marginBottom:'10px'}}>
             <Yang/>
             <Yang/>
             <Yang/>
-        </div>
+        </Stack>
     )
 }
 
 // 兑2
 export function Dui(){
     return (
-        <div>
+        <Stack spacing={2} sx={{marginBottom:'10px'}}>
             <Ying/>
             <Yang/>
             <Yang/>
-        </div>
+        </Stack>
     )
 }
 // 离3
 export function MyLi(){
     return (
-        <div>
+        <Stack spacing={2} sx={{marginBottom:'10px'}}>
             <Yang/>
             <Ying/>
             <Yang/>
-        </div>
+        </Stack>
     )
 }
 
@@ -36,54 +37,54 @@ export function MyLi(){
 // 震4
 export function Zhen(){
     return (
-        <div>
+        <Stack spacing={2} sx={{marginBottom:'10px'}}>
             <Ying/>
             <Ying/>
             <Yang/>
-        </div>
+        </Stack>
     )
 }
 
 // 巽5
 export function Xun(){
     return (
-        <div>
+        <Stack spacing={2} sx={{marginBottom:'10px'}}>
             <Yang/>
             <Yang/>
             <Ying/>
-        </div>
+        </Stack>
     )
 }
 // 坎6
 export function Kan(){
     return (
-        <div>
+        <Stack spacing={2} sx={{marginBottom:'10px'}}>
             <Ying/>
             <Yang/>
             <Ying/>
-        </div>
+        </Stack>
     )
 }
 
 // 艮7
 export function Gen(){
     return (
-        <div>
+        <Stack spacing={2} sx={{marginBottom:'10px'}}>
             <Yang/>
             <Ying/>
             <Ying/>
-        </div>
+        </Stack>
     )
 }
 
 // 坤8
 export function Kun(){
     return (
-        <div>
+        <Stack spacing={2} sx={{marginBottom:'10px'}}>
             <Ying/>
             <Ying/>
             <Ying/>
-        </div>
+        </Stack>
     )
 }
 

@@ -39,9 +39,9 @@ function DetailItem() {
     return (
         <div>
             <Button onClick={() => navigator(-1)}>返回</Button>
-            <div>
+            <div style={{display:"flex"}}>
                 <div style={{
-                    width: '200px'
+                    width: '400px'
                 }}>
                     {content(gua)}
                 </div>
@@ -60,7 +60,6 @@ function DetailItem() {
 }
 
 export function ShowGua(key: string, value: number) {
-
     return (
         <div>
             {ShowUp(key)}
