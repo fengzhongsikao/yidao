@@ -5,14 +5,12 @@ import {invoke} from "@tauri-apps/api/core";
 
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import { Box } from "@mui/material";
+import {Box} from "@mui/material";
 
 interface Category {
     id: number;
     name: string;
 }
-
-
 
 
 type guaType = {
@@ -22,7 +20,7 @@ type guaType = {
     "gua_ci": string,
     "yao_ci": Array<string>,
 }
-type guaListType=guaType[];
+type guaListType = guaType[];
 
 function Aside() {
 
@@ -37,8 +35,16 @@ function Aside() {
         },
         {
             id: 1,
-            name: '测试'
+            name: '梅花'
         },
+        {
+            id: 2,
+            name: '六爻'
+        },
+        {
+            id: 3,
+            name: '测试'
+        }
     ];
 
     const navigator = useNavigate();
@@ -53,7 +59,9 @@ function Aside() {
                 // 处理错误，例如设置一个错误状态
             }
         }
-        init().then(()=>{})
+
+        init().then(() => {
+        })
 
     }, []);
 
@@ -66,22 +74,26 @@ function Aside() {
         if (index == 0) {
             navigator('grid');
         } else if (index == 1) {
-            navigator('test');
+            navigator('plumBlossom');
         } else if (index == 2) {
+            navigator('sixLines');
+        } else if (index == 3) {
+            navigator('test');
         }
+
         setClickValue(index); // 每次点击增加状态值
 
     };
     return (
 
-    <Box sx={{ width: 100, height: "100vh", borderRight: "1px solid red" }}>
-        <Stack spacing={4} >
-            {categoryList.map((item) => (
-                <Button key={item.id} variant={clickValue === item.id ? "contained" : 'outlined'} onClick={() =>
-                    handleButtonClick(item.id)} sx={{ maxWidth: 'fit-content' }}>{item.name}</Button>
-            ))}
-        </Stack>
-    </Box>
+        <Box sx={{width: 100, height: "100vh", borderRight: "1px solid red"}}>
+            <Stack spacing={4}>
+                {categoryList.map((item) => (
+                    <Button key={item.id} variant={clickValue === item.id ? "contained" : 'outlined'} onClick={() =>
+                        handleButtonClick(item.id)} sx={{maxWidth: 'fit-content'}}>{item.name}</Button>
+                ))}
+            </Stack>
+        </Box>
 
     );
 }

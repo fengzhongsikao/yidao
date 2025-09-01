@@ -108,7 +108,7 @@ export function ShowUp(key: string) {
 export function ShowDown(value: number) {
     if (value === 1) {
         return (
-            <Qian/>
+            <><Qian/></>
         )
     } else if (value === 2) {
         return (
