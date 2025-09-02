@@ -4,7 +4,8 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import Box from '@mui/material/Box';
-import React, {useEffect, useState} from "react";
+import React, { useState} from "react";
+import {guaIndexMap} from '@/values/guaMap.ts'
 
 
 //乾1 兑2 离3 震4 巽5 坎6 艮7 坤8
@@ -124,7 +125,15 @@ const PlumBlossom = () => {
     const [num2Up, setNum2Up] = useState(0);
     const [num2Down, setNum2Down] = useState(0);
 
-    const handleClick1 = () => {
+
+    const [visible, setVisible] = useState(false);
+
+    const handleClick1 = async () => {
+
+        const currentDate = getCurrentDate();
+        await fetchData(currentDate)
+
+
         const up = ((year + month + day) % 8) || 8;
         const down = ((year + month + day + hour) % 8) || 8;
         const cn = ((year + month + day + hour) % 6) || 6;
@@ -159,7 +168,7 @@ const PlumBlossom = () => {
         }
         setNum3Up(num3Up);
         setNum3Down(num3Down)
-        console.log(num3Up, num3Down,"num3")
+        // console.log(num3Up, num3Down,"num3")
 
         //互卦
         let benGua = [...rawA, ...rawB]; // 6爻数组
@@ -183,7 +192,6 @@ const PlumBlossom = () => {
                 if (arraysEqual(downWu, guaMap[i])) num2Down = i + 1;
             }
         } else {
-            console.log("走这个")
             let huUp = [benGua[1], benGua[2], benGua[3]]; // 上卦
             let huDown = [benGua[2], benGua[3], benGua[4]]; // 下卦
             for (let i = 0; i < guaMap.length; i++) {
@@ -191,10 +199,14 @@ const PlumBlossom = () => {
                 if (arraysEqual(huDown, guaMap[i])) num2Down = i + 1;
             }
         }
-        console.log(num2Up, num2Down,"num2")
+
         setNum2Up(num2Up);
         setNum2Down(num2Down)
 
+        setVisible(true)
+
+        console.log(year,month,day,hour,"年月日时")
+        console.log(num1UP,num1Down,changeNumber,"上下变")
     };
 
     const fetchData = async (dateString: string) => {
@@ -225,10 +237,6 @@ const PlumBlossom = () => {
     };
 
 
-    useEffect(() => {
-        const currentDate = getCurrentDate();
-        fetchData(currentDate)
-    }, []); //
 
 
     return (
@@ -239,11 +247,11 @@ const PlumBlossom = () => {
                 <Button variant="contained">自己设定</Button>
                 <Button variant="contained">电脑自动</Button>
             </Stack>
-            <Stack direction="row" spacing={5} sx={{mt: 10}}>
+            {visible &&<Stack direction="row" spacing={5} sx={{mt: 10}}>
                 <OriginalHexagram num1={num1UP} num2={num1Down} changeNumber={changeNumber}/>
                 <MutualHexagram num1={num2Up} num2={num2Down}/>
                 <ChangingHexagram num1={num3Up} num2={num3Down}/>
-            </Stack>
+            </Stack>}
         </div>
     );
 };
@@ -361,13 +369,19 @@ const guaMin = (num1: number, num2: number) => {
     }
 }
 
+const getGuamin=(num1:number,num2:number):string=>{
+    const key = `${num1}-${num2}`;
+    // 得到卦名，如 "乾"
+    return guaIndexMap[key];
+}
+
 //主卦
 const OriginalHexagram: React.FC<ChildProps> = ({num1, num2, changeNumber}) => {
     return <Stack direction="row" spacing={2}>
         <Card sx={{textAlign: 'center', minWidth: 140, maxWidth: 150}}>
             <CardContent>
                 <Typography variant="h6" gutterBottom>
-                    {guaMin(num1, num2)}
+                    {guaMin(num1, num2)}{getGuamin(num1, num2)}
                 </Typography>
                 <GuaCard yaoArray={returnGua(num1)}/>
                 <Box sx={{mt: 1}}/>
@@ -412,7 +426,7 @@ const ChangingHexagram: React.FC<ChildProps2> = ({num1, num2}) => {
         <Card sx={{textAlign: 'center', minWidth: 140}}>
             <CardContent>
                 <Typography variant="h6" gutterBottom>
-                    {guaMin(num1, num2)}
+                    {guaMin(num1, num2)}{getGuamin(num1, num2)}
                 </Typography>
                 <GuaCard yaoArray={returnGua(num1)}/>
                 <Box sx={{mt: 1}}/>
