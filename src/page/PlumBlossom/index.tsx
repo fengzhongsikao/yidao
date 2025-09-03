@@ -4,8 +4,9 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import Box from '@mui/material/Box';
-import React, { useState} from "react";
+import React, {useState} from "react";
 import {guaIndexMap} from '@/values/guaMap.ts'
+import paiMeng from '@/assets/paimeng.png'
 
 
 //乾1 兑2 离3 震4 巽5 坎6 艮7 坤8
@@ -83,7 +84,16 @@ const bagualei: Record<string, string> = {
 }
 // const bagua=['乾','兑','离','震','巽','坎','艮','坤']
 const wuxin = {'乾': '金', '坤': '土', '震': '木', '巽': '木', '坎': '水', '离': '火', '艮': '土', '兑': '金'}
+interface ChildProps {
+    num1: number;
+    num2: number;
+    changeNumber: number;
+}
 
+interface ChildProps2 {
+    num1: number;
+    num2: number;
+}
 
 // 简化的转换函数（只返回地支数字）
 function convertEarthlyBranch(ganzhi: string) {
@@ -108,12 +118,200 @@ function arraysEqual(a: boolean[], b: boolean[]) {
     return a.length === b.length && a.every((v, i) => v === b[i]);
 }
 
-const PlumBlossom = () => {
+const returnGua = (num: number): boolean[] => {
+    switch (num) {
+        case 1:
+            return qian;
+        case 2:
+            return dui;
+        case 3:
+            return myli;
+        case 4:
+            return zhen;
+        case 5:
+            return xun;
+        case 6:
+            return kan;
+        case 7:
+            return gen;
+        case 8:
+            return kun;
+        default:
+            return kun;
+    }
+};
 
+const returnGuaShu = (num: number): string => {
+    switch (num) {
+        case 1:
+            return bagualei['乾'];
+        case 2:
+            return bagualei['兑'];
+        case 3:
+            return bagualei['离'];
+        case 4:
+            return bagualei['震'];
+        case 5:
+            return bagualei['巽'];
+        case 6:
+            return bagualei['坎'];
+        case 7:
+            return bagualei['艮'];
+        case 8:
+            return bagualei['坤'];
+        default:
+            return bagualei['乾'];
+    }
+};
+
+const returnWuxin = (num: number): string => {
+    switch (num) {
+        case 1:
+            return wuxin['乾'];
+        case 2:
+            return wuxin['兑'];
+        case 3:
+            return wuxin['离'];
+        case 4:
+            return wuxin['震'];
+        case 5:
+            return wuxin['巽'];
+        case 6:
+            return wuxin['坎'];
+        case 7:
+            return wuxin['艮'];
+        case 8:
+            return wuxin['坤'];
+        default:
+            return wuxin['乾'];
+    }
+};
+
+const returnEight = (num: number): string => {
+    switch (num) {
+        case 1:
+            return '乾';
+        case 2:
+            return '兑';
+        case 3:
+            return '离';
+        case 4:
+            return '震';
+        case 5:
+            return '巽';
+        case 6:
+            return '坎';
+        case 7:
+            return '艮';
+        case 8:
+            return '坤';
+        default:
+            return '乾';
+    }
+};
+
+const guaMin = (num1: number, num2: number) => {
+    if (returnGua(num1) == returnGua(num2)) {
+        return returnEight(num1) + "为" + returnGuaShu(num1)
+    } else {
+        return returnGuaShu(num1) + returnGuaShu(num2)
+    }
+}
+
+const getGuamin=(num1:number,num2:number):string=>{
+    const key = `${num1}-${num2}`;
+    // 得到卦名，如 "乾"
+    if(num1==num2){
+        return ''
+    }else{
+        return guaIndexMap[key];
+    }
+
+}
+
+//主卦
+const OriginalHexagram: React.FC<ChildProps> = ({num1, num2, changeNumber}) => {
+    return <Stack direction="row" spacing={2}>
+        <Card sx={{textAlign: 'center', minWidth: 140, maxWidth: 150}}>
+            <CardContent>
+                <Typography variant="h6" gutterBottom>
+                    {guaMin(num1, num2)}{getGuamin(num1, num2)}
+                </Typography>
+                <GuaCard yaoArray={returnGua(num1)}/>
+                <Box sx={{mt: 1}}/>
+                <GuaCard yaoArray={returnGua(num2)}/>
+                <Typography variant="h6" gutterBottom sx={{mt: 3}}>
+                    主卦 {changeNumber}爻动
+                </Typography>
+            </CardContent>
+        </Card>
+        <Stack direction="column" sx={{height: '100%', justifyContent: 'space-between'}}>
+            <Box sx={{mt: 8}}>{returnEight(num1)}{returnWuxin(num1)}</Box>
+            <Box sx={{mb: 12}}>{returnEight(num2)}{returnWuxin(num2)}</Box>
+        </Stack>
+    </Stack>
+}
+
+//互卦
+const MutualHexagram: React.FC<ChildProps2> = ({num1, num2}) => {
+    return <Stack direction="row" spacing={2}>
+        <Card sx={{textAlign: 'center', minWidth: 140}}>
+            <CardContent>
+                <Typography variant="h6" gutterBottom>
+                    {returnEight(num1)}{returnEight(num2)}
+                </Typography>
+                <GuaCard yaoArray={returnGua(num1)}/>
+                <Box sx={{mt: 1}}/>
+                <GuaCard yaoArray={returnGua(num2)}/>
+                <Typography variant="h6" gutterBottom sx={{mt: 3}}>
+                    互卦
+                </Typography>
+            </CardContent>
+        </Card>
+        <Stack direction="column" sx={{height: '100%', justifyContent: 'space-between'}}>
+            <Box sx={{mt: 8}}>{returnEight(num1)}{returnWuxin(num1)}</Box>
+            <Box sx={{mb: 12}}>{returnEight(num2)}{returnWuxin(num2)}</Box>
+        </Stack>
+    </Stack>
+}
+//变卦
+const ChangingHexagram: React.FC<ChildProps2> = ({num1, num2}) => {
+    return <Stack direction="row" spacing={2}>
+        <Card sx={{textAlign: 'center', minWidth: 140}}>
+            <CardContent>
+                <Typography variant="h6" gutterBottom>
+                    {guaMin(num1, num2)}{getGuamin(num1, num2)}
+                </Typography>
+                <GuaCard yaoArray={returnGua(num1)}/>
+                <Box sx={{mt: 1}}/>
+                <GuaCard yaoArray={returnGua(num2)}/>
+                <Typography variant="h6" gutterBottom sx={{mt: 3}}>
+                    变卦
+                </Typography>
+            </CardContent>
+        </Card>
+        <Stack direction="column" sx={{height: '100%', justifyContent: 'space-between'}}>
+            <Box sx={{mt: 8}}>{returnEight(num1)}{returnWuxin(num1)}</Box>
+            <Box sx={{mb: 12}}>{returnEight(num2)}{returnWuxin(num2)}</Box>
+        </Stack>
+    </Stack>
+}
+
+const PlumBlossom = () => {
     let year: number
     let month: number
     let day: number
     let hour: number
+
+
+    //公历年月日
+    const [publicTime, setPublicTime] = useState('')
+    // 农历年月日
+    const [lunar, setLunar] = useState('')
+
+    const [ganYear, setGanYear] = useState('')
+    const [ganMonth, setGanMonth] = useState('')
+    const [ganDay, setGanDay] = useState('')
 
     const [num1UP, setNum1UP] = useState(0);
     const [num1Down, setNum1Down] = useState(0);
@@ -127,6 +325,8 @@ const PlumBlossom = () => {
 
 
     const [visible, setVisible] = useState(false);
+
+    const [shifen, setShifen] = useState('')
 
     const handleClick1 = async () => {
 
@@ -209,6 +409,10 @@ const PlumBlossom = () => {
         console.log(num1UP,num1Down,changeNumber,"上下变")
     };
 
+    const handleBack = () => {
+        setVisible(false);
+    }
+
     const fetchData = async (dateString: string) => {
         try {
             // 注意：根据搜索结果，URL中的sun参数可能需要特定的日期格式，请确保dateString符合要求
@@ -219,6 +423,20 @@ const PlumBlossom = () => {
             year = convertEarthlyBranch(result.data.TianGanDiZhiYear)
             month = Number(result.data.LunarDateTime.split('-')[1])
             day = Number(result.data.LunarDateTime.split('-')[2])
+
+            setLunar(result.data.LunarDateTime)
+
+
+            setGanYear(result.data.TianGanDiZhiYear)
+            setGanMonth(result.data.TianGanDiZhiMonth)
+            setGanDay(result.data.TianGanDiZhiDay)
+
+
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            setShifen(`${hours}:${minutes}`)
+            setPublicTime(result.data.GregorianDateTime)
         } catch (err) {
             console.error('Fetch error:', err);
         }
@@ -237,17 +455,31 @@ const PlumBlossom = () => {
     };
 
 
-
-
     return (
         <div>
             <Stack direction="row" spacing={2}>
-                <Button variant="contained" onClick={handleClick1}>时间起卦</Button>
-                <Button variant="contained">数字起卦</Button>
-                <Button variant="contained">自己设定</Button>
-                <Button variant="contained">电脑自动</Button>
+                {!visible&&<Button variant="contained" onClick={handleClick1}>时间起卦</Button>}
+                {!visible&&<Button variant="contained">数字起卦</Button>}
+                {!visible&&<Button variant="contained">自己设定</Button>}
+                {!visible&&<Button variant="contained">电脑自动</Button>}
+                {visible&&<Button variant="contained" onClick={handleBack}>返回</Button>}
             </Stack>
-            {visible &&<Stack direction="row" spacing={5} sx={{mt: 10}}>
+            {visible && <Stack direction="column" spacing={2} sx={{mt: 5}}>
+                <Typography>
+                    <Box component="span" fontWeight="bold">起卦方式: </Box>时间起卦
+                </Typography>
+                <Typography>
+                    <Box component="span" fontWeight="bold">公历: </Box>{publicTime} {shifen}
+                </Typography>
+                <Typography>
+                    <Box component="span" fontWeight="bold">农历: </Box>{lunar}
+                </Typography>
+                <Typography>
+                    <Box component="span" fontWeight="bold">干支: </Box>{ganYear}年 {ganMonth}月 {ganDay}日
+                </Typography>
+            </Stack>}
+            {!visible&&<img src={paiMeng} alt='派蒙流口水的图片'/>}cl
+            {visible &&<Stack direction="row" spacing={5} sx={{mt: 5}}>
                 <OriginalHexagram num1={num1UP} num2={num1Down} changeNumber={changeNumber}/>
                 <MutualHexagram num1={num2Up} num2={num2Down}/>
                 <ChangingHexagram num1={num3Up} num2={num3Down}/>
@@ -255,192 +487,5 @@ const PlumBlossom = () => {
         </div>
     );
 };
-
-interface ChildProps {
-    num1: number;
-    num2: number;
-    changeNumber: number;
-}
-
-interface ChildProps2 {
-    num1: number;
-    num2: number;
-}
-
-const returnGua = (num: number): boolean[] => {
-    switch (num) {
-        case 1:
-            return qian;
-        case 2:
-            return dui;
-        case 3:
-            return myli;
-        case 4:
-            return zhen;
-        case 5:
-            return xun;
-        case 6:
-            return kan;
-        case 7:
-            return gen;
-        case 8:
-            return kun;
-        default:
-            return kun;
-    }
-};
-
-
-const returnGuaShu = (num: number): string => {
-    switch (num) {
-        case 1:
-            return bagualei['乾'];
-        case 2:
-            return bagualei['兑'];
-        case 3:
-            return bagualei['离'];
-        case 4:
-            return bagualei['震'];
-        case 5:
-            return bagualei['巽'];
-        case 6:
-            return bagualei['坎'];
-        case 7:
-            return bagualei['艮'];
-        case 8:
-            return bagualei['坤'];
-        default:
-            return bagualei['乾'];
-    }
-};
-
-const returnWuxin = (num: number): string => {
-    switch (num) {
-        case 1:
-            return wuxin['乾'];
-        case 2:
-            return wuxin['兑'];
-        case 3:
-            return wuxin['离'];
-        case 4:
-            return wuxin['震'];
-        case 5:
-            return wuxin['巽'];
-        case 6:
-            return wuxin['坎'];
-        case 7:
-            return wuxin['艮'];
-        case 8:
-            return wuxin['坤'];
-        default:
-            return wuxin['乾'];
-    }
-};
-
-
-const returnEight = (num: number): string => {
-    switch (num) {
-        case 1:
-            return '乾';
-        case 2:
-            return '兑';
-        case 3:
-            return '离';
-        case 4:
-            return '震';
-        case 5:
-            return '巽';
-        case 6:
-            return '坎';
-        case 7:
-            return '艮';
-        case 8:
-            return '坤';
-        default:
-            return '乾';
-    }
-};
-
-const guaMin = (num1: number, num2: number) => {
-    if (returnGua(num1) == returnGua(num2)) {
-        return returnEight(num1) + "为" + returnGuaShu(num1)
-    } else {
-        return returnGuaShu(num1) + returnGuaShu(num2)
-    }
-}
-
-const getGuamin=(num1:number,num2:number):string=>{
-    const key = `${num1}-${num2}`;
-    // 得到卦名，如 "乾"
-    return guaIndexMap[key];
-}
-
-//主卦
-const OriginalHexagram: React.FC<ChildProps> = ({num1, num2, changeNumber}) => {
-    return <Stack direction="row" spacing={2}>
-        <Card sx={{textAlign: 'center', minWidth: 140, maxWidth: 150}}>
-            <CardContent>
-                <Typography variant="h6" gutterBottom>
-                    {guaMin(num1, num2)}{getGuamin(num1, num2)}
-                </Typography>
-                <GuaCard yaoArray={returnGua(num1)}/>
-                <Box sx={{mt: 1}}/>
-                <GuaCard yaoArray={returnGua(num2)}/>
-                <Typography variant="h6" gutterBottom sx={{mt: 3}}>
-                    主卦 {changeNumber}爻动
-                </Typography>
-            </CardContent>
-        </Card>
-        <Stack direction="column" sx={{height: '100%', justifyContent: 'space-between'}}>
-            <Box sx={{mt: 8}}>{returnEight(num1)}{returnWuxin(num1)}</Box>
-            <Box sx={{mb: 12}}>{returnEight(num2)}{returnWuxin(num2)}</Box>
-        </Stack>
-    </Stack>
-}
-
-//互卦
-const MutualHexagram: React.FC<ChildProps2> = ({num1, num2}) => {
-    return <Stack direction="row" spacing={2}>
-        <Card sx={{textAlign: 'center', minWidth: 140}}>
-            <CardContent>
-                <Typography variant="h6" gutterBottom>
-                    {returnEight(num1)}{returnEight(num2)}
-                </Typography>
-                <GuaCard yaoArray={returnGua(num1)}/>
-                <Box sx={{mt: 1}}/>
-                <GuaCard yaoArray={returnGua(num2)}/>
-                <Typography variant="h6" gutterBottom sx={{mt: 3}}>
-                    互卦
-                </Typography>
-            </CardContent>
-        </Card>
-        <Stack direction="column" sx={{height: '100%', justifyContent: 'space-between'}}>
-            <Box sx={{mt: 8}}>{returnEight(num1)}{returnWuxin(num1)}</Box>
-            <Box sx={{mb: 12}}>{returnEight(num2)}{returnWuxin(num2)}</Box>
-        </Stack>
-    </Stack>
-}
-//变卦
-const ChangingHexagram: React.FC<ChildProps2> = ({num1, num2}) => {
-    return <Stack direction="row" spacing={2}>
-        <Card sx={{textAlign: 'center', minWidth: 140}}>
-            <CardContent>
-                <Typography variant="h6" gutterBottom>
-                    {guaMin(num1, num2)}{getGuamin(num1, num2)}
-                </Typography>
-                <GuaCard yaoArray={returnGua(num1)}/>
-                <Box sx={{mt: 1}}/>
-                <GuaCard yaoArray={returnGua(num2)}/>
-                <Typography variant="h6" gutterBottom sx={{mt: 3}}>
-                    变卦
-                </Typography>
-            </CardContent>
-        </Card>
-        <Stack direction="column" sx={{height: '100%', justifyContent: 'space-between'}}>
-            <Box sx={{mt: 8}}>{returnEight(num1)}{returnWuxin(num1)}</Box>
-            <Box sx={{mb: 12}}>{returnEight(num2)}{returnWuxin(num2)}</Box>
-        </Stack>
-    </Stack>
-}
 
 export default PlumBlossom;

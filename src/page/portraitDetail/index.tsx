@@ -15,10 +15,12 @@ type guaType = {
 
 function DetailItem() {
     const navigator = useNavigate();
-    const [params] = useSearchParams();
+
     const [gua, setGua] = useState<guaType>({gua_ci: "", gua_name: "", id: 0, up_down: "", yao_ci: []});
 
     const bears = useGuaStore((state: any) => state.guaListTemp)
+
+    const [params] = useSearchParams();
 
     const numberParam = Number(params.get('id'));
 
