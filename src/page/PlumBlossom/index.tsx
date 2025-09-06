@@ -243,7 +243,7 @@ const OriginalHexagram: React.FC<ChildProps> = ({num1, num2, changeNumber}) => {
                 <Box sx={{mt: 1}}/>
                 <GuaCard yaoArray={returnGua(num2)}/>
                 <Typography variant="h6" gutterBottom sx={{mt: 3}}>
-                    主卦 {changeNumber}爻动
+                    主卦 {changeNumber|| ''}爻动
                 </Typography>
             </CardContent>
         </Card>
@@ -307,13 +307,13 @@ const PlumBlossom = () => {
 
 
     //公历年月日
-    const [publicTime, setPublicTime] = useState('')
+    const [publicTime, setPublicTime] = useState('无')
     // 农历年月日
-    const [lunar, setLunar] = useState('')
+    const [lunar, setLunar] = useState('无')
 
-    const [ganYear, setGanYear] = useState('')
-    const [ganMonth, setGanMonth] = useState('')
-    const [ganDay, setGanDay] = useState('')
+    const [ganYear, setGanYear] = useState('无')
+    const [ganMonth, setGanMonth] = useState('无')
+    const [ganDay, setGanDay] = useState('无')
 
     const [num1UP, setNum1UP] = useState(0);
     const [num1Down, setNum1Down] = useState(0);
@@ -330,13 +330,13 @@ const PlumBlossom = () => {
     const [visible2, setVisible2] = useState(false);
     const [visible3, setVisible3] = useState(false);
 
-    const [shifen, setShifen] = useState('')
+    const [shifen, setShifen] = useState('无')
 
     const [selectValue, setSelectValue] = React.useState('10');
 
     const [value1, setValue1] = React.useState('');
 
-    const [guaWay, setGuaWay] = useState('')
+    const [guaWay, setGuaWay] = useState('无')
 
     const handleChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
         if(event.target.value=='20'){
@@ -433,6 +433,12 @@ const PlumBlossom = () => {
         const currentDate = getCurrentDate();
         await fetchData(currentDate)
 
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        setShifen(`${hours}:${minutes}`)
+
+
         // 2. 更新状态
         setNum1UP(up);
         setNum1Down(down);
@@ -523,12 +529,8 @@ const PlumBlossom = () => {
             setGanMonth(result.data.TianGanDiZhiMonth)
             setGanDay(result.data.TianGanDiZhiDay)
 
-
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            setShifen(`${hours}:${minutes}`)
             setPublicTime(result.data.GregorianDateTime)
+
         } catch (err) {
             console.error('Fetch error:', err);
         }
@@ -553,7 +555,7 @@ const PlumBlossom = () => {
     return (
         <div>
             <Stack direction="row" spacing={2}>
-                {visible || <FormControl sx={{minWidth: 200}} size='small'>
+                {visible ? null: <FormControl sx={{minWidth: 200}} size='small'>
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
@@ -567,10 +569,10 @@ const PlumBlossom = () => {
                         <MenuItem value={40}>电脑自动</MenuItem>
                     </Select>
                 </FormControl>}
-                {visible || <Button variant="contained" onClick={handleClick}>开始排盘</Button>}
-                {visible && <Button variant="contained" onClick={handleBack}>返回</Button>}
+                {visible ? null:<Button variant="contained" onClick={handleClick}>开始排盘</Button>}
+                {!visible ? null: <Button variant="contained" onClick={handleBack}>返回</Button>}
             </Stack>
-            {visible2 &&<Stack direction="row" spacing={2} sx={{mt: 5}}>
+            {!visible2 ? null:<Stack direction="row" spacing={2} sx={{mt: 5}}>
                 <TextField
                     required
                     id="outlined-required"
@@ -580,7 +582,7 @@ const PlumBlossom = () => {
                 />
             </Stack>}
 
-            {visible3 &&<Stack direction="row" spacing={2} sx={{mt: 5}}>
+            {!visible3 ? null:<Stack direction="row" spacing={2} sx={{mt: 5}}>
                 <TextField
                     required
                     id="outlined-required"
@@ -590,7 +592,7 @@ const PlumBlossom = () => {
                 />
             </Stack>}
 
-            {visible &&  <Stack direction="column" spacing={2} sx={{mt: 5}}>
+            {!visible ? null:  <Stack direction="column" spacing={2} sx={{mt: 5}}>
                 <Typography>
                     <Box component="span" fontWeight="bold">起卦方式: </Box>{guaWay}
                 </Typography>
@@ -604,8 +606,8 @@ const PlumBlossom = () => {
                     <Box component="span" fontWeight="bold">干支: </Box>{ganYear}年 {ganMonth}月 {ganDay}日
                 </Typography>
             </Stack>}
-            {!visible&&<img src={paiMeng} alt='派蒙流口水的图片'/>}
-            {visible &&<Stack direction="row" spacing={5} sx={{mt: 5}}>
+            {visible ? null:<img src={paiMeng} alt='派蒙流口水的图片'/>}
+            {!visible ? null:<Stack direction="row" spacing={5} sx={{mt: 5}}>
                 <OriginalHexagram num1={num1UP} num2={num1Down} changeNumber={changeNumber}/>
                 <MutualHexagram num1={num2Up} num2={num2Down}/>
                 <ChangingHexagram num1={num3Up} num2={num3Down}/>
