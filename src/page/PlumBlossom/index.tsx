@@ -9,7 +9,7 @@ import {guaIndexMap} from '@/values/guaMap.ts'
 import paiMeng from '@/assets/paimeng.png'
 import TextField from "@mui/material/TextField";
 import {FormControl, MenuItem, Select} from "@mui/material";
-import { fetch } from '@tauri-apps/plugin-http';
+import  {fetch}  from '@tauri-apps/plugin-http';
 
 
 //乾1 兑2 离3 震4 巽5 坎6 艮7 坤8
@@ -85,7 +85,6 @@ const bagualei: Record<string, string> = {
     '艮': '山',
     '兑': '泽'
 }
-// const bagua=['乾','兑','离','震','巽','坎','艮','坤']
 const wuxin = {'乾': '金', '坤': '土', '震': '木', '巽': '木', '坎': '水', '离': '火', '艮': '土', '兑': '金'}
 interface ChildProps {
     num1: number;
@@ -450,8 +449,6 @@ const PlumBlossom = () => {
         const minutes = String(now.getMinutes()).padStart(2, '0');
         setShifen(`${hours}:${minutes}`)
 
-
-
         //变卦
         let rawA = returnGua(up);
         let rawB = returnGua(down);
@@ -528,9 +525,15 @@ const PlumBlossom = () => {
     const fetchData = async (dateString: string) => {
         try {
             // 注意：根据搜索结果，URL中的sun参数可能需要特定的日期格式，请确保dateString符合要求
-            const response = await fetch(`https://www.36jxs.com/api/Commonweal/almanac?sun=${dateString}`);
+            const response = await fetch(`https://www.36jxs.com/api/Commonweal/almanac?sun=${dateString}`, {
+                method: 'GET',
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+                    'Referer': 'https://www.36jxs.com/',
+                    'Accept': 'application/json, text/plain, */*',
+                },
+            });
             const result = await response.json();
-            console.log(result)
             // 拿到年月日的数字
             year = convertEarthlyBranch(result.data.TianGanDiZhiYear)
             month = Number(result.data.LunarDateTime.split('-')[1])

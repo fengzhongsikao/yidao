@@ -10,13 +10,10 @@
     "shell:allow-open",
     "dialog:allow-message",
     "http:default",
-    "http:default",
-    "http:default",
-    "http:default",
     "dialog:default",
     {
       "identifier": "http:default",
-      "allow": [{ "url": "https://www.36jxs.com/api/Commonweal/*" }]
+      "allow": [{ "url": "https://www.36jxs.com/*" }]
     }
   ]
 }
