@@ -1,6 +1,6 @@
 import {quan} from '@/values/quangua.ts';
 
-import {useNavigate} from 'react-router-dom'
+import {useNavigate} from 'react-router'
 import Button from "@mui/material/Button";
 
 function itemList() {

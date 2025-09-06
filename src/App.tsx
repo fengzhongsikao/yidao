@@ -1,6 +1,6 @@
 import "./App.css";
 import Aside from "@/page/Aside/index.tsx";
-import {Outlet} from "react-router-dom";
+import {Outlet} from "react-router";
 
 function App() {
 

@@ -9,6 +9,7 @@ import {guaIndexMap} from '@/values/guaMap.ts'
 import paiMeng from '@/assets/paimeng.png'
 import TextField from "@mui/material/TextField";
 import {FormControl, MenuItem, Select} from "@mui/material";
+import { fetch } from '@tauri-apps/plugin-http';
 
 
 //乾1 兑2 离3 震4 巽5 坎6 艮7 坤8
@@ -371,17 +372,24 @@ const PlumBlossom = () => {
     const isValid = (str: string) => /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(str);
     //时间起卦
     const handleClick1 = async () => {
+        const currentDate = getCurrentDate();
+        await fetchData(currentDate)
 
         const up = ((year + month + day) % 8) || 8;
         const down = ((year + month + day + hour) % 8) || 8;
         const cn = ((year + month + day + hour) % 6) || 6;
 
+        console.log("时间起卦,上卦，下卦，动爻",up,down,cn)
         setGuaWay("时间起卦")
+        console.log(up,down,cn)
         await commonOperation(up,down,cn)
 
     };
 
     const handleClick2 = async () => {
+
+        const currentDate = getCurrentDate();
+        await fetchData(currentDate)
 
         let num1=Number(value1.split('.')[0])
         let num2=Number(value1.split('.')[1])
@@ -399,6 +407,9 @@ const PlumBlossom = () => {
     }
 
     const handleClick3 = async () => {
+        const currentDate = getCurrentDate();
+        await fetchData(currentDate)
+
         let t1=Number(value1.split('.')[0])
         let t2=Number(value1.split('.')[1])
         let t3=Number(value1.split('.')[2])
@@ -415,6 +426,9 @@ const PlumBlossom = () => {
     }
 
     const handleClick4 = async () => {
+        const currentDate = getCurrentDate();
+        await fetchData(currentDate)
+
         const x = Math.floor(Math.random() * 1000) + 1; // 1-1000 闭区间
         const y = Math.floor(Math.random() * 1000) + 1; // 1-1000 闭区间
         const z = Math.floor(Math.random() * 1000) + 1; // 1-1000 闭区间
@@ -430,8 +444,6 @@ const PlumBlossom = () => {
 
     const commonOperation=async (up:number,down:number,cn:number)=>{
 
-        const currentDate = getCurrentDate();
-        await fetchData(currentDate)
 
         const now = new Date();
         const hours = String(now.getHours()).padStart(2, '0');
@@ -439,10 +451,7 @@ const PlumBlossom = () => {
         setShifen(`${hours}:${minutes}`)
 
 
-        // 2. 更新状态
-        setNum1UP(up);
-        setNum1Down(down);
-        setChangeNumber(cn);
+
         //变卦
         let rawA = returnGua(up);
         let rawB = returnGua(down);
@@ -504,6 +513,11 @@ const PlumBlossom = () => {
 
         console.log(year,month,day,hour,"年月日时")
         console.log(num1UP,num1Down,changeNumber,"上下变")
+
+        // 2. 更新状态
+        setNum1UP(up);
+        setNum1Down(down);
+        setChangeNumber(cn);
     }
 
     const handleBack = () => {

@@ -8,7 +8,7 @@ import Test from "@/page/Test";
 
 import {
     createBrowserRouter,
-} from "react-router-dom";
+} from "react-router";
 
 const router=createBrowserRouter([
     {

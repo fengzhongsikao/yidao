@@ -1,7 +1,7 @@
-pub mod my_lib{
-    use std::fs;
+pub mod my_lib {
     use serde::{Deserialize, Serialize};
     use std::env;
+    use std::fs;
     #[derive(Serialize, Deserialize, Debug)]
     pub struct Guashu {
         id: u32,
@@ -16,18 +16,15 @@ pub mod my_lib{
         data: Vec<Guashu>,
     }
 
-
-
-    pub fn gua_data() ->  Vec<Guashu> {
-
+    pub fn gua_data() -> Vec<Guashu> {
         let current_dir = env::current_dir();
         let current_path = current_dir.unwrap().join("assets\\data.json");
 
         let json_data = fs::read_to_string(current_path).unwrap().to_string();
 
-
         // 解析JSON数据
-        let guashu_data:GuashuData = serde_json::from_str(&json_data).expect("JSON was not well-formatted");
+        let guashu_data: GuashuData =
+            serde_json::from_str(&json_data).expect("JSON was not well-formatted");
 
         // println!("{:?}", guashu_data);
 

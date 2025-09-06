@@ -1,4 +1,4 @@
-import {useNavigate, useSearchParams} from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router";
 import {guaMap} from "@/values/guaMap.ts";
 import {Qian, Dui, MyLi, Zhen, Xun, Kan, Gen, Kun} from "@/page/comnents/bagua.tsx";
 import {useEffect, useState} from "react";
