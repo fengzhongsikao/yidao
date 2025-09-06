@@ -7,6 +7,8 @@ import Box from '@mui/material/Box';
 import React, {useState} from "react";
 import {guaIndexMap} from '@/values/guaMap.ts'
 import paiMeng from '@/assets/paimeng.png'
+import TextField from "@mui/material/TextField";
+import {FormControl, MenuItem, Select} from "@mui/material";
 
 
 //乾1 兑2 离3 震4 巽5 坎6 艮7 坤8
@@ -325,25 +327,116 @@ const PlumBlossom = () => {
 
 
     const [visible, setVisible] = useState(false);
+    const [visible2, setVisible2] = useState(false);
+    const [visible3, setVisible3] = useState(false);
 
     const [shifen, setShifen] = useState('')
 
+    const [selectValue, setSelectValue] = React.useState('10');
+
+    const [value1, setValue1] = React.useState('');
+
+    const [guaWay, setGuaWay] = useState('')
+
+    const handleChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        if(event.target.value=='20'){
+            setVisible2(true);
+        }else{
+            setVisible2(false);
+        }
+        if(event.target.value=='30'){
+            setVisible3(true);
+        }else{
+            setVisible3(false);
+        }
+        setSelectValue(event.target.value);
+    };
+
+    // 开始排盘
+    const handleClick=async ()=>{
+        let sel=Number(selectValue)
+        console.log(sel)
+        if(sel===10){
+           await handleClick1()
+        }else if(sel===20){
+           await  handleClick2()
+        }else if(sel===30){
+           await handleClick3()
+        }
+        else if(sel===40){
+           await handleClick4()
+        }
+    }
+
+    const isValid = (str: string) => /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(str);
+    //时间起卦
     const handleClick1 = async () => {
-
-        const currentDate = getCurrentDate();
-        await fetchData(currentDate)
-
 
         const up = ((year + month + day) % 8) || 8;
         const down = ((year + month + day + hour) % 8) || 8;
         const cn = ((year + month + day + hour) % 6) || 6;
 
+        setGuaWay("时间起卦")
+        await commonOperation(up,down,cn)
+
+    };
+
+    const handleClick2 = async () => {
+
+        let num1=Number(value1.split('.')[0])
+        let num2=Number(value1.split('.')[1])
+        let num3=Number(value1.split('.')[2])
+        if(!isValid(value1)){
+            alert("请规范输入")
+        }else{
+            const up = (num1  % 8) || 8;
+            const down = (num2 % 8) || 8;
+            const cn = (num3 % 6) || 6;
+            setVisible2(false);
+            setGuaWay("数字起卦")
+            await commonOperation(up,down,cn)
+        }
+    }
+
+    const handleClick3 = async () => {
+        let t1=Number(value1.split('.')[0])
+        let t2=Number(value1.split('.')[1])
+        let t3=Number(value1.split('.')[2])
+        if(!isValid(value1)){
+            alert("请规范输入")
+        }else{
+            const up = (t1  % 8) || 8;
+            const down = (t2 % 8) || 8;
+            const cn = (t3 % 6) || 6;
+            setVisible3(false);
+            setGuaWay("数字起卦")
+            await commonOperation(up,down,cn)
+        }
+    }
+
+    const handleClick4 = async () => {
+        const x = Math.floor(Math.random() * 1000) + 1; // 1-1000 闭区间
+        const y = Math.floor(Math.random() * 1000) + 1; // 1-1000 闭区间
+        const z = Math.floor(Math.random() * 1000) + 1; // 1-1000 闭区间
+
+        const up = (x  % 8) || 8;
+        const down = (y % 8) || 8;
+        const cn = (z % 6) || 6;
+        setVisible2(false);
+        setGuaWay("电脑自动")
+        await commonOperation(up,down,cn)
+    }
+
+
+    const commonOperation=async (up:number,down:number,cn:number)=>{
+
+        const currentDate = getCurrentDate();
+        await fetchData(currentDate)
+
         // 2. 更新状态
         setNum1UP(up);
         setNum1Down(down);
         setChangeNumber(cn);
-
-
         //变卦
         let rawA = returnGua(up);
         let rawB = returnGua(down);
@@ -375,8 +468,6 @@ const PlumBlossom = () => {
 
 
 
-
-
         let num2Up = 0;
         let num2Down = 0;
         if (arraysEqual(rawA, guaMap[0]) && arraysEqual(rawB, guaMap[0]) || arraysEqual(rawA, guaMap[5]) && arraysEqual(rawB, guaMap[5])) {
@@ -403,15 +494,16 @@ const PlumBlossom = () => {
         setNum2Up(num2Up);
         setNum2Down(num2Down)
 
-        setVisible(true)
+        setVisible(true);
 
         console.log(year,month,day,hour,"年月日时")
         console.log(num1UP,num1Down,changeNumber,"上下变")
-    };
+    }
 
     const handleBack = () => {
-        setVisible(false);
+      setVisible(false);
     }
+
 
     const fetchData = async (dateString: string) => {
         try {
@@ -454,19 +546,53 @@ const PlumBlossom = () => {
         return `${year}-${month}-${day}`;
     };
 
+    const handleChangeNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setValue1(e.target.value);          // 实时拿到最新值
+    };
 
     return (
         <div>
             <Stack direction="row" spacing={2}>
-                {!visible&&<Button variant="contained" onClick={handleClick1}>时间起卦</Button>}
-                {!visible&&<Button variant="contained">数字起卦</Button>}
-                {!visible&&<Button variant="contained">自己设定</Button>}
-                {!visible&&<Button variant="contained">电脑自动</Button>}
-                {visible&&<Button variant="contained" onClick={handleBack}>返回</Button>}
+                {visible || <FormControl sx={{minWidth: 200}} size='small'>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={selectValue}
+                        label="起卦方式"
+                        onChange={handleChange}
+                    >
+                        <MenuItem value={10}>时间起卦</MenuItem>
+                        <MenuItem value={20}>数字起卦</MenuItem>
+                        <MenuItem value={30}>自己设定</MenuItem>
+                        <MenuItem value={40}>电脑自动</MenuItem>
+                    </Select>
+                </FormControl>}
+                {visible || <Button variant="contained" onClick={handleClick}>开始排盘</Button>}
+                {visible && <Button variant="contained" onClick={handleBack}>返回</Button>}
             </Stack>
-            {visible && <Stack direction="column" spacing={2} sx={{mt: 5}}>
+            {visible2 &&<Stack direction="row" spacing={2} sx={{mt: 5}}>
+                <TextField
+                    required
+                    id="outlined-required"
+                    label="请输入 例:12.34.56"
+                    value={value1}
+                    onChange={handleChangeNumber}
+                />
+            </Stack>}
+
+            {visible3 &&<Stack direction="row" spacing={2} sx={{mt: 5}}>
+                <TextField
+                    required
+                    id="outlined-required"
+                    label="请输入上卦.下卦.变爻(先天卦数)"
+                    value={value1}
+                    onChange={handleChangeNumber}
+                />
+            </Stack>}
+
+            {visible &&  <Stack direction="column" spacing={2} sx={{mt: 5}}>
                 <Typography>
-                    <Box component="span" fontWeight="bold">起卦方式: </Box>时间起卦
+                    <Box component="span" fontWeight="bold">起卦方式: </Box>{guaWay}
                 </Typography>
                 <Typography>
                     <Box component="span" fontWeight="bold">公历: </Box>{publicTime} {shifen}
@@ -478,7 +604,7 @@ const PlumBlossom = () => {
                     <Box component="span" fontWeight="bold">干支: </Box>{ganYear}年 {ganMonth}月 {ganDay}日
                 </Typography>
             </Stack>}
-            {!visible&&<img src={paiMeng} alt='派蒙流口水的图片'/>}cl
+            {!visible&&<img src={paiMeng} alt='派蒙流口水的图片'/>}
             {visible &&<Stack direction="row" spacing={5} sx={{mt: 5}}>
                 <OriginalHexagram num1={num1UP} num2={num1Down} changeNumber={changeNumber}/>
                 <MutualHexagram num1={num2Up} num2={num2Down}/>
