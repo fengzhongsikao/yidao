@@ -48,18 +48,6 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_opener::init())
-        .setup(|app| {
-           app.handle().plugin(
-                    tauri_plugin_log::Builder::new()
-                        .target(tauri_plugin_log::Target::new(
-                            tauri_plugin_log::TargetKind::LogDir {
-                                file_name: Some("logs".to_string()),
-                            },
-                        ))
-                        .build(),
-                )?;
-            Ok(())
-        })
         .invoke_handler(tauri::generate_handler![json])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
