@@ -7,13 +7,21 @@
   ],
   "permissions": [
     "core:default",
-    "shell:allow-open",
-    "dialog:allow-message",
+    "opener:default",
     "http:default",
-    "dialog:default",
     {
       "identifier": "http:default",
-      "allow": [{ "url": "https://www.36jxs.com/*" }]
-    }
+      "allow": [
+        {
+          "url": "https://www.36jxs.com/*"
+        }
+      ],
+      "deny": [
+        {
+          "url": "https://private.tauri.app"
+        }
+      ]
+    },
+    "dialog:default"
   ]
 }

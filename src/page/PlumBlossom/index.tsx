@@ -509,7 +509,6 @@ const PlumBlossom = () => {
         setVisible(true);
 
         console.log(year,month,day,hour,"年月日时")
-        console.log(num1UP,num1Down,changeNumber,"上下变")
 
         // 2. 更新状态
         setNum1UP(up);
@@ -526,12 +525,7 @@ const PlumBlossom = () => {
         try {
             // 注意：根据搜索结果，URL中的sun参数可能需要特定的日期格式，请确保dateString符合要求
             const response = await fetch(`https://www.36jxs.com/api/Commonweal/almanac?sun=${dateString}`, {
-                method: 'GET',
-                headers: {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
-                    'Referer': 'https://www.36jxs.com/',
-                    'Accept': 'application/json, text/plain, */*',
-                },
+                method: 'GET'
             });
             const result = await response.json();
             // 拿到年月日的数字
