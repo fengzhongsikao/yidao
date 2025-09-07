@@ -1,8 +1,14 @@
 // mod about_json;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde::Serialize;
 use std::env;
 use std::fs;
-#[derive(Serialize, Deserialize, Debug)]
+use tauri::path::BaseDirectory;
+use tauri::AppHandle;
+use tauri::Manager;
+use tauri_plugin_log::log;
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Guashu {
     id: u32,
     gua_name: String,
@@ -15,45 +21,40 @@ pub struct Guashu {
 pub struct GuashuData {
     data: Vec<Guashu>,
 }
+
 #[tauri::command]
-fn json() -> Vec<Guashu> {
-    // let current_dir = env::current_dir();
-    // let current_path = current_dir.unwrap().join("assets\\data.json");
+fn json(app: AppHandle) -> Result<Vec<Guashu>, String> {
+    let data_path = app
+        .path()
+        .resolve("data.json", BaseDirectory::Resource)
+        .map_err(|e| {
+            log::error!("Failed to resolve data.json path: {e}");
+            "Unable to resolve data.json path"
+        })?;
 
-    // let json_data = fs::read_to_string(current_path).unwrap().to_string();
+    let json_data = fs::read_to_string(data_path).map_err(|e| {
+        log::error!("Unable to read file: {e}");
+        "Unable to read file"
+    })?;
 
-    // // 解析JSON数据
-    // let guashu_data: GuashuData =
-    //     serde_json::from_str(&json_data).expect("JSON was not well-formatted");
-
-    // // println!("{:?}", guashu_data);
-
-    // // for guashu in guashu_data.data {
-    // //     println!("ID: {}", guashu.id);
-    // //     println!("卦名: {}", guashu.gua_name);
-    // //     println!("上下: {}", guashu.up_down);
-    // //     println!("卦辞: {}", guashu.gua_ci);
-    // //     println!("爻辞:");
-    // //     for yao in guashu.yao_ci {
-    // //         println!("  {}", yao);
-    // //     }
-    // // }
-    // guashu_data.data
-
-
-  let current_dir = env::current_dir()
-        .expect("无法获取当前目录");
-    
-    let current_path = current_dir.join("assets\\data.json");
-    
-    let json_data = fs::read_to_string(&current_path)
-        .expect(&format!("无法读取文件 {}", current_path.display()));
-    
     // 解析JSON数据
-    let guashu_data: GuashuData = serde_json::from_str(&json_data)
-        .expect("JSON解析失败");
-    
-    guashu_data.data
+    let guashu_data: GuashuData = serde_json::from_str(&json_data).map_err(|e| {
+        log::error!("Failed to parse JSON: {e}");
+        "JSON was not well-formatted"
+    })?;
+
+    // for guashu in &guashu_data.data {
+    //     println!("ID: {}", guashu.id);
+    //     println!("卦名: {}", guashu.gua_name);
+    //     println!("上下: {}", guashu.up_down);
+    //     println!("卦辞: {}", guashu.gua_ci);
+    //     println!("爻辞:");
+    //     for yao in &guashu.yao_ci {
+    //         println!("  {}", yao);
+    //     }
+    // }
+    // let GuashuData { data } = guashu_data;
+    Ok(guashu_data.data)
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
