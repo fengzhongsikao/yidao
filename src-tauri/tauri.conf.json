@@ -18,7 +18,7 @@
       }
     ],
     "security": {
-      "csp": null
+      "csp":  "default-src 'self' 'unsafe-eval' 'unsafe-inline' data: blob:; connect-src 'self' https://www.36jxs.com/* http://localhost:3000"
     }
   },
   "bundle": {

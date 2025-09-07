@@ -9,8 +9,7 @@ import {guaIndexMap} from '@/values/guaMap.ts'
 import paiMeng from '@/assets/paimeng.png'
 import TextField from "@mui/material/TextField";
 import {FormControl, MenuItem, Select} from "@mui/material";
-import  {fetch}  from '@tauri-apps/plugin-http';
-
+import {invoke} from "@tauri-apps/api/core";
 
 //乾1 兑2 离3 震4 巽5 坎6 艮7 坤8
 const qian = [true, true, true];
@@ -371,8 +370,7 @@ const PlumBlossom = () => {
     const isValid = (str: string) => /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(str);
     //时间起卦
     const handleClick1 = async () => {
-        const currentDate = getCurrentDate();
-        await fetchData(currentDate)
+        await fetchData()
 
         const up = ((year + month + day) % 8) || 8;
         const down = ((year + month + day + hour) % 8) || 8;
@@ -387,8 +385,7 @@ const PlumBlossom = () => {
 
     const handleClick2 = async () => {
 
-        const currentDate = getCurrentDate();
-        await fetchData(currentDate)
+        await fetchData()
 
         let num1=Number(value1.split('.')[0])
         let num2=Number(value1.split('.')[1])
@@ -406,8 +403,7 @@ const PlumBlossom = () => {
     }
 
     const handleClick3 = async () => {
-        const currentDate = getCurrentDate();
-        await fetchData(currentDate)
+        await fetchData()
 
         let t1=Number(value1.split('.')[0])
         let t2=Number(value1.split('.')[1])
@@ -425,8 +421,8 @@ const PlumBlossom = () => {
     }
 
     const handleClick4 = async () => {
-        const currentDate = getCurrentDate();
-        await fetchData(currentDate)
+
+        await fetchData()
 
         const x = Math.floor(Math.random() * 1000) + 1; // 1-1000 闭区间
         const y = Math.floor(Math.random() * 1000) + 1; // 1-1000 闭区间
@@ -521,26 +517,32 @@ const PlumBlossom = () => {
     }
 
 
-    const fetchData = async (dateString: string) => {
+    const fetchData = async () => {
+        const dateString = getCurrentDate();
         try {
             // 注意：根据搜索结果，URL中的sun参数可能需要特定的日期格式，请确保dateString符合要求
-            const response = await fetch(`https://www.36jxs.com/api/Commonweal/almanac?sun=${dateString}`, {
-                method: 'GET'
+            // const response = await fetch(`https://www.36jxs.com/api/Commonweal/almanac?sun=${dateString}`, {
+            //     method: 'GET'
+            // });
+            const response:any = await invoke('fetch_external_data', {
+                url: `https://www.36jxs.com/api/Commonweal/almanac?sun=${dateString}`
             });
-            const result = await response.json();
-            // 拿到年月日的数字
-            year = convertEarthlyBranch(result.data.TianGanDiZhiYear)
-            month = Number(result.data.LunarDateTime.split('-')[1])
-            day = Number(result.data.LunarDateTime.split('-')[2])
+            const data = JSON.parse(response);
+            console.log('成功获取数据:', data);
+            // const result = await response.json();
+            // // 拿到年月日的数字
+            year = convertEarthlyBranch(data.TianGanDiZhiYear);
+            month = Number(data.LunarDateTime.split('-')[1])
+            day = Number(data.LunarDateTime.split('-')[2])
 
-            setLunar(result.data.LunarDateTime)
+            setLunar(data.LunarDateTime)
 
 
-            setGanYear(result.data.TianGanDiZhiYear)
-            setGanMonth(result.data.TianGanDiZhiMonth)
-            setGanDay(result.data.TianGanDiZhiDay)
+            setGanYear(data.TianGanDiZhiYear)
+            setGanMonth(data.TianGanDiZhiMonth)
+            setGanDay(data.TianGanDiZhiDay)
 
-            setPublicTime(result.data.GregorianDateTime)
+            setPublicTime(data.GregorianDateTime)
 
         } catch (err) {
             console.error('Fetch error:', err);
