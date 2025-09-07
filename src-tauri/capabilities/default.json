@@ -22,6 +22,8 @@
         }
       ]
     },
-    "dialog:default"
+    "dialog:default",
+    "log:default",
+    "log:default"
   ]
 }
