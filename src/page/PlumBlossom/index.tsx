@@ -10,6 +10,7 @@ import paiMeng from '@/assets/paimeng.png'
 import TextField from "@mui/material/TextField";
 import {FormControl, MenuItem, Select} from "@mui/material";
 import {invoke} from "@tauri-apps/api/core";
+import { getEarthlyBranchHour } from '@/page/utils/time.ts';
 
 //乾1 兑2 离3 震4 巽5 坎6 艮7 坤8
 const qian = [true, true, true];
@@ -111,9 +112,7 @@ function convertEarthlyBranch(ganzhi: string) {
     return earthlyBranches[branchChar];
 }
 
-const getEarthlyBranchHour = (hour: number) => {
-    return Math.floor(((hour + 1) % 24) / 2);
-};
+
 
 function arraysEqual(a: boolean[], b: boolean[]) {
     return a.length === b.length && a.every((v, i) => v === b[i]);
