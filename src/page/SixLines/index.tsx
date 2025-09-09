@@ -8,6 +8,7 @@ import Box from "@mui/material/Box";
 import {getCurrentDate} from '@/page/utils/time.ts';
 import {invoke} from "@tauri-apps/api/core";
 import {hexagramData} from  "@/values/guaMap.ts"
+import {LIU_SHI_SI_GUA} from "@/values/liushisi-gua.ts";
 
 
 interface GuaCardProps {
@@ -21,27 +22,122 @@ interface GuaCardProps2 {
     hexagram: {value:number,change:boolean}[],
     sixRelatives: string[],
     sixGods: string[],
-    shiYing?: { shiPosition: number; yingPosition: number }
+}
+
+// 定义神煞类型
+type Deity = '青龙' | '朱雀' | '勾陈' | '腾蛇' | '白虎' | '玄武';
+
+// 定义天干对应的神煞映射
+const DEITY_MAP: Record<string, Deity> = {
+    '甲': '青龙',
+    '乙': '青龙',
+    '丙': '朱雀',
+    '丁': '朱雀',
+    '戊': '勾陈',
+    '己': '腾蛇',
+    '庚': '白虎',
+    '辛': '白虎',
+    '壬': '玄武',
+    '癸': '玄武'
+};
+
+// 定义神煞的顺序（六神顺序）
+const DEITY_ORDER: Deity[] = ['青龙', '朱雀', '勾陈', '腾蛇', '白虎', '玄武'];
+
+// 生成单爻（通过三枚硬币抛掷）
+function generateYao (){
+    // 模拟三枚硬币抛掷（2=正面/阳，3=反面/阴）
+    const coin1 = Math.floor(Math.random() * 2) + 2;
+    const coin2 = Math.floor(Math.random() * 2) + 2;
+    const coin3 = Math.floor(Math.random() * 2) + 2;
+
+    const sum = coin1 + coin2 + coin3;
+
+    // 6: 老阴, 7: 少阳, 8: 少阴, 9: 老阳
+    if (sum === 6) return { value: 0, change: true }; // 老阴 (变爻)
+    else if (sum === 7) return { value: 1, change: false }; // 少阳
+    else if (sum === 8) return { value: 0, change: false }; // 少阴
+    else return { value: 1, change: true }; // 老阳 (变爻)
+}
+
+// 生成六爻卦象
+function generateHexagram(){
+    const hexagram :{ value: number, change: boolean }[] = [];
+    for (let i = 0; i < 6; i++) {
+        hexagram.push(generateYao());
+    }
+    return hexagram.reverse();
+}
+// 生成六爻卦象 指定
+function generateHexagram2(arr:string[]){
+    const hexagram :{ value: number, change: boolean }[] = [];
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] === '6') {
+            hexagram.push({ value: 0, change: true })
+        }
+        else if (arr[i] === '7') {
+            hexagram.push({ value: 1, change: false })
+        }
+        else if (arr[i] === '8') {
+            hexagram.push({ value: 0, change: false })
+        }
+        else if (arr[i] === '9') {
+            hexagram.push({ value: 1, change: true })
+        }
+    }
+    return hexagram.reverse();
+}
+
+// 生成六亲 // 六亲数据 "父母", "官鬼", "兄弟", "妻财", "子孙"
+function generateSixRelatives  (str:string) {
+    let relatives:string[] = [];
+    for (let i = 0; i < LIU_SHI_SI_GUA.length; i++) {
+        if(LIU_SHI_SI_GUA[i].name === str){
+            relatives= [...LIU_SHI_SI_GUA[i].yaos]
+            break
+        }
+    }
+    return relatives;
+}
+
+function generateSixRelatives2  (str:string) {
+    let relatives:string[] = [];
+    for (let i = 0; i < LIU_SHI_SI_GUA.length; i++) {
+        if(LIU_SHI_SI_GUA[i].name === str){
+            relatives= [...LIU_SHI_SI_GUA[i].yaos]
+            break
+        }
+    }
+    return relatives;
 }
 
 
-
+// 生成世应位置
+function generateShiYing  (str:string)  {
+    let shiPosition = 0;
+    for (let i = 0; i < LIU_SHI_SI_GUA.length; i++) {
+        if(LIU_SHI_SI_GUA[i].name === str){
+            shiPosition=6-LIU_SHI_SI_GUA[i].shi
+        }
+    }
+    const yingPosition = (shiPosition + 3) % 6;
+    return {shiPosition, yingPosition};
+}
 
 // 显示卦象的组件
 const HexagramDisplay: React.FC<GuaCardProps> = ({hexagram, sixRelatives, sixGods, shiYing}) => {
     return (
         <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', my: 3}}>
             {hexagram.map((yao, index:number) => {
-                const position = 5 - index; // 从下往上数
-                const isShi = position === shiYing?.shiPosition;
-                const isYing = position === shiYing?.yingPosition;
+                const isShi = index === shiYing?.shiPosition;
+                const isYing = index=== shiYing?.yingPosition;
 
                 return (
                     <Box key={index} sx={{display: 'flex', alignItems: 'center', width: '100%', mb: 1}}>
                         {/* 六神 */}
                         <Box sx={{width: 60, textAlign: 'center'}}>
                             <Chip
-                                label={sixGods[position]}
+                                label={sixGods[index]}
                                 size="small"
                                 color="primary"
                                 variant="outlined"
@@ -49,9 +145,9 @@ const HexagramDisplay: React.FC<GuaCardProps> = ({hexagram, sixRelatives, sixGod
                         </Box>
 
                         {/* 六亲 */}
-                        <Box sx={{width: 60, textAlign: 'center'}}>
+                        <Box sx={{width: 120, textAlign: 'center'}}>
                             <Chip
-                                label={sixRelatives[position]}
+                                label={sixRelatives[index].split(' ')[1]+sixRelatives[index].split(' ')[0]}
                                 size="small"
                                 color="secondary"
                                 variant="outlined"
@@ -142,19 +238,18 @@ const HexagramDisplay: React.FC<GuaCardProps> = ({hexagram, sixRelatives, sixGod
     );
 };
 
-const HexagramDisplay2: React.FC<GuaCardProps2> = ({hexagram, sixRelatives, shiYing}) => {
+const HexagramDisplay2: React.FC<GuaCardProps2> = ({hexagram, sixRelatives}) => {
     return (
         <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', my: 3}}>
             {hexagram.map((yao, index:number) => {
-                const position = 5 - index; // 从下往上数
 
                 return (
                     <Box key={index} sx={{display: 'flex', alignItems: 'center', width: '100%', mb: 1}}>
 
                         {/* 六亲 */}
-                        <Box sx={{width: 60, textAlign: 'center'}}>
+                        <Box sx={{width: 120, textAlign: 'center'}}>
                             <Chip
-                                label={sixRelatives[position]}
+                                label={sixRelatives[index].split(' ')[1]+sixRelatives[index].split(' ')[0]}
                                 size="small"
                                 color="secondary"
                                 variant="outlined"
@@ -216,61 +311,16 @@ const HexagramDisplay2: React.FC<GuaCardProps2> = ({hexagram, sixRelatives, shiY
     );
 };
 
-// 六亲数据
-const sixRelatives = ["父母", "官鬼", "兄弟", "妻财", "子孙"];
+// 游魂
+const you:string[]=["火地晋","雷山小过","天水讼","泽风大过","山雷颐","地火明夷","风泽中孚","水天需"]
+// 归魂
+const gui:string[]=["火天大有","雷泽归妹","天火同人","泽雷随","山风蛊","地水师","风山渐","水地比"]
 
-// 六神数据
-const sixGods = ["青龙", "朱雀", "勾陈", "螣蛇", "白虎", "玄武"];
-
-
-// 生成六亲
-const generateSixRelatives = () => {
-    const relatives = [];
-    for (let i = 0; i < 6; i++) {
-        relatives.push(sixRelatives[Math.floor(Math.random() * sixRelatives.length)]);
-    }
-    return relatives;
-};
-
-// 生成六神
-const generateSixGods = () => {
-    const gods = [];
-    for (let i = 0; i < 6; i++) {
-        gods.push(sixGods[Math.floor(Math.random() * sixGods.length)]);
-    }
-    return gods;
-};
-
-// 生成世应位置
-const generateShiYing = () => {
-    const shiPosition = Math.floor(Math.random() * 6);
-    const yingPosition = (shiPosition + 3) % 6;
-    return {shiPosition, yingPosition};
-};
-
-// 生成单爻（通过三枚硬币抛掷）
-function generateYao (){
-    // 模拟三枚硬币抛掷（2=正面/阳，3=反面/阴）
-    const coin1 = Math.floor(Math.random() * 2) + 2;
-    const coin2 = Math.floor(Math.random() * 2) + 2;
-    const coin3 = Math.floor(Math.random() * 2) + 2;
-
-    const sum = coin1 + coin2 + coin3;
-
-    // 6: 老阴, 7: 少阳, 8: 少阴, 9: 老阳
-    if (sum === 6) return { value: 0, change: true }; // 老阴 (变爻)
-    else if (sum === 7) return { value: 1, change: false }; // 少阳
-    else if (sum === 8) return { value: 0, change: false }; // 少阴
-    else return { value: 1, change: true }; // 老阳 (变爻)
-}
-
-// 生成六爻卦象
-function generateHexagram(){
-    const hexagram :{ value: number, change: boolean }[] = [];
-    for (let i = 0; i < 6; i++) {
-        hexagram.push(generateYao());
-    }
-    return hexagram.reverse();
+function generateDeitiesArray(dayStem: string): Deity[] {
+    const startingDeity = DEITY_MAP[dayStem];
+    const startIndex = DEITY_ORDER.indexOf(startingDeity);
+    const temp= [...DEITY_ORDER.slice(startIndex), ...DEITY_ORDER.slice(0, startIndex)];
+    return temp.reverse();
 }
 
 function SixLines() {
@@ -298,8 +348,12 @@ function SixLines() {
 
 
     const [sixRelatives, setSixRelatives] = useState<string[]>([]);
+    const [sixRelatives2, setSixRelatives2] = useState<string[]>([]);
     const [sixGods, setSixGods] = useState<string[]>([]);
     const [shiYing, setShiYing] = useState({shiPosition: 0, yingPosition: 3});
+
+    const [place, setPlace] = useState("")
+    const [place2, setPlace2] = useState("")
 
 
     const fetchData = async () => {
@@ -318,7 +372,6 @@ function SixLines() {
             setGanDay(data.TianGanDiZhiDay)
 
             setPublicTime(data.GregorianDateTime)
-
 
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
@@ -342,14 +395,14 @@ function SixLines() {
 
     const handleBack = () => {
         setVisible(false);
+        if(guaWay==="自己设定"){
+            setVisible2(true)
+        }
     }
 
     const handleChangeNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
         setValue1(e.target.value);          // 实时拿到最新值
     };
-
-
-
 
 
     // 开始排盘
@@ -369,9 +422,10 @@ function SixLines() {
 
 
         const newHexagram = generateHexagram();
-        const newRelatives = generateSixRelatives();
-        const newGods = generateSixGods();
-        const newShiYing = generateShiYing();
+
+
+        const newGods = generateDeitiesArray(ganDay.slice(0,1));
+
 
         const newHexagram2 = newHexagram.map(
             ({ value, change }) =>
@@ -389,27 +443,92 @@ function SixLines() {
             }
             return item.value
         }).join('');
+        const newShiYing = generateShiYing(hexagramData[result1]);
+        const newRelatives = generateSixRelatives(hexagramData[result1]);
+        const newRelatives2 = generateSixRelatives2(hexagramData[result2]);
         setHexagramName1(hexagramData[result1])
         setHexagramName2(hexagramData[result2])
 
-        console.log(hexagramData[result2])
         setHexagram(newHexagram);
         setHexagram2(newHexagram2);
 
         setSixRelatives(newRelatives);
+        setSixRelatives2(newRelatives2);
         setSixGods(newGods);
         setShiYing(newShiYing);
+
+        // 卦宫
+        for (let i = 0; i < LIU_SHI_SI_GUA.length; i++) {
+            if(LIU_SHI_SI_GUA[i].name === hexagramData[result1]){
+                setPlace(LIU_SHI_SI_GUA[i].palace)
+            }
+            else if(LIU_SHI_SI_GUA[i].name === hexagramData[result2]){
+                setPlace2(LIU_SHI_SI_GUA[i].palace)
+            }
+        }
         setGuaWay("电脑自动")
     }
+
+
+    const pattern=(str: string)=> /^([6-9])\.([6-9])\.([6-9])\.([6-9])\.([6-9])\.([6-9])$/.test(str);
 
     //自己设定
     const handleClick2 = async () => {
         await fetchData()
-        setVisible2(false);
-        setVisible(true);
-        setGuaWay("自己设定")
-    }
 
+        setGuaWay("自己设定")
+        if(!pattern(value1)){
+            alert("请规范输入")
+        }else{
+            console.log(value1)
+            let s1=value1.split('.')
+            const newHexagram= generateHexagram2(s1)
+            const newGods = generateDeitiesArray(ganDay.slice(0,1));
+
+
+            const newHexagram2 = newHexagram.map(
+                ({ value, change }) =>
+                    change ? { value: value ^ 1, change } : { value, change }
+            );
+
+            const result1 = Object.values(newHexagram).map(item => item.value).join('');
+            const result2 = Object.values(newHexagram).map(item => {
+                if(item.change){
+                    if(item.value===1){
+                        return 0
+                    }else{
+                        return 1
+                    }
+                }
+                return item.value
+            }).join('');
+            const newShiYing = generateShiYing(hexagramData[result1]);
+            const newRelatives = generateSixRelatives(hexagramData[result1]);
+            const newRelatives2 = generateSixRelatives2(hexagramData[result2]);
+            setHexagramName1(hexagramData[result1])
+            setHexagramName2(hexagramData[result2])
+
+            setHexagram(newHexagram);
+            setHexagram2(newHexagram2);
+
+            setSixRelatives(newRelatives);
+            setSixRelatives2(newRelatives2);
+            setSixGods(newGods);
+            setShiYing(newShiYing);
+
+            // 卦宫
+            for (let i = 0; i < LIU_SHI_SI_GUA.length; i++) {
+                if(LIU_SHI_SI_GUA[i].name === hexagramData[result1]){
+                    setPlace(LIU_SHI_SI_GUA[i].palace)
+                }
+                else if(LIU_SHI_SI_GUA[i].name === hexagramData[result2]){
+                    setPlace2(LIU_SHI_SI_GUA[i].palace)
+                }
+            }
+            setVisible2(false);
+            setVisible(true);
+        }
+    }
 
     return (
         <div>
@@ -433,7 +552,7 @@ function SixLines() {
                 <TextField
                     required
                     id="outlined-required"
-                    label="请输入 例:12.34.56"
+                    label="正2 反3 例如:6.7.8.9.6.7"
                     value={value1}
                     onChange={handleChangeNumber}
                 />
@@ -452,10 +571,10 @@ function SixLines() {
                     <Box component="span" fontWeight="bold">干支: </Box>{ganYear}年 {ganMonth}月 {ganDay}日
                 </Typography>
             </Stack>}
-            {!visible ? null : <Stack direction="row" spacing={5} sx={{mt: 5}}>
-                <Stack direction="column" spacing={2} sx={{mt: 5}}>
+            {!visible ? null : <Stack direction="row"  sx={{mt: 5}}>
+                <Stack direction="column" spacing={2} sx={{mt: 5,alignItems:'center'}}>
                     <Typography variant="h6" gutterBottom>
-                        {hexagramName1}
+                        {hexagramName1}({place}){you.includes(hexagramName1)?"游魂":""}{gui.includes(hexagramName1)?"归魂":""}
                     </Typography>
                     <HexagramDisplay
                         hexagram={hexagram}
@@ -465,15 +584,14 @@ function SixLines() {
                     />
                 </Stack>
 
-                <Stack direction="column" spacing={2} sx={{mt: 5}}>
+                <Stack direction="column" spacing={2} sx={{mt: 5,alignItems:'center'}}>
                     <Typography variant="h6" gutterBottom>
-                        {hexagramName2}
+                        {hexagramName2}({place2}){you.includes(hexagramName2)?"游魂":""}{gui.includes(hexagramName2)?"归魂":""}
                     </Typography>
                     <HexagramDisplay2
                         hexagram={hexagram2}
-                        sixRelatives={sixRelatives}
+                        sixRelatives={sixRelatives2}
                         sixGods={sixGods}
-                        shiYing={shiYing}
                     />
                 </Stack>
             </Stack>}

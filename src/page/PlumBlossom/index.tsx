@@ -513,6 +513,12 @@ const PlumBlossom = () => {
 
     const handleBack = () => {
       setVisible(false);
+        if(guaWay==="自己设定"){
+            setVisible3(true)
+        }
+        if(guaWay==="数字起卦"){
+            setVisible2(true)
+        }
     }
 
 
